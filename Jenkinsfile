@@ -45,11 +45,6 @@ pipeline {
             }
           }
         }
-    stage('Docker BnP') {
-    steps {
-        sh "echo done"
-        }
-      }
    }
 }
     stage('Deploy to Dev') {
