@@ -18,7 +18,7 @@ pipeline {
         }
       }
     }
-    stage('SCA') {
+  stage('SCA') {
       steps {
         container('maven') {
           catchError(buildResult: 'SUCCESS', stageResult:
@@ -36,7 +36,7 @@ pipeline {
       }
     }
   }
-    stage('Package') {
+  stage('Package') {
       parallel {
         stage('Create Jarfile') {
           steps {
@@ -45,6 +45,12 @@ pipeline {
             }
           }
         }
-   }
-}
-}
+      }
+    }
+  stage('Deploy to Dev') {
+      steps {
+        // TODO
+        sh "echo done"
+      }
+    }
+  }
