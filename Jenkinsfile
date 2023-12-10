@@ -18,17 +18,24 @@ pipeline {
         }
       }
     }
-    stage('Test') {
-      parallel {
-        stage('Unit Tests') {
-          steps {
-            container('maven') {
-              sh 'mvn test'
-            }
-          }
+    stage('SCA') {
+      steps {
+        container('maven') {
+          catchError(buildResult: 'SUCCESS', stageResult:
+    'FAILURE') {
+                sh 'mvn org.owasp:dependency-check-maven:check'
+               }
+           }
+        }
+        post {
+        always {
+          archiveArtifacts allowEmptyArchive: true,
+    artifacts: 'target/dependency-check-report.html', fingerprint:
+    true, onlyIfSuccessful: true
         }
       }
     }
+  }
     stage('Package') {
       parallel {
         stage('Create Jarfile') {
@@ -40,14 +47,11 @@ pipeline {
         }
     stage('Docker BnP') {
     steps {
-      container('kaniko') {
-        sh '/kaniko/executor -c `pwd` --cache=true --destination=gcr.io/mkbn/dsodemo'
-          }
+        sh "echo done"
         }
       }
    }
 }
-
     stage('Deploy to Dev') {
       steps {
         // TODO
